@@ -1,5 +1,5 @@
 import { Router } from "express";
-import productManager from "../productManager.js";
+import productManager from "../dao/fileSystem/productManager.js";
 import { io } from "../app.js";
 
 const router = Router();
@@ -17,8 +17,9 @@ router.get("/", async (req, res) => {
 router.get("/realtimeproducts", async (req, res) => {
   try {
     const products = await productManager.getProducts();
-    io.emit("products", products);
-
+    if(products) {
+      io.emit("products", products);
+    }
     res.render("realTimeProducts");
   } catch (error) {
     console.log(error);
