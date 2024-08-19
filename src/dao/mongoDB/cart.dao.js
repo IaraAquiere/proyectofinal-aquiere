@@ -79,4 +79,6 @@ export default {
   update,
   deleteOne,
   addProductToCart,
+  updateQuantityProductInCart,
+  clearProductsToCart
 };
