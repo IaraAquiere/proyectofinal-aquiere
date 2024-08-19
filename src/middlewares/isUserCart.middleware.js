@@ -2,6 +2,9 @@ import { request, response } from "express";
 
 export const isUserCart = async (req = request, res = response, next) => {
     const { cid } = req.params;
+    console.log(cid);
+    console.log(req.user.cart);
+    
     if(req.user.cart !== cid ) return res.status(401).json({status: "error", msg: "Wrong cart user"});
     
     next();
