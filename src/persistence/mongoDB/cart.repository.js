@@ -28,26 +28,7 @@ const deleteOne = async (id) => {
 };
 
 const addProductToCart = async (cid, pid) => {
-  // Método 1
-  // const productInCart = await cartModel.findOneAndUpdate({ _id: cid, "products.product": pid }, { $inc: { "products.$.quantity": 1 } });
-  // /*
-  // $inc: Este es el operador de incremento. Se utiliza para incrementar el valor de un campo numérico en la cantidad especificada.
-  // "products.$.quantity":
-  // products: es el nombre del array
-  // $:  es el operador de posición. Representa el primer elemento del array que coincide con la condición especificada
-  // en el filtro de la consulta. Básicamente, este operador selecciona el elemento correcto del array para la actualización.
-  // quantity: es el campo del objeto dentro del array products cuyo valor queremos incrementar.
-  // */
-
-  // if (!productInCart) {
-  //   await cartModel.updateOne({ _id: cid }, { $push: { products: { product: pid, quantity: 1 } } });
-  // }
-
-  // const cartUpdate = await cartModel.findById(cid);
-  // return cartUpdate;
-
-  // Método 2
-
+  
   const cart = await cartModel.findById(cid);
 
   const productInCart = cart.products.find((element) => element.product == pid);
@@ -57,7 +38,7 @@ const addProductToCart = async (cid, pid) => {
     cart.products.push({ product: pid, quantity: 1 });
   }
 
-  await cart.save(); // Guardamos los cambios realizado en la base de datos de mongo
+  await cart.save(); 
   return cart;
 };
 
