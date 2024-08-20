@@ -8,7 +8,7 @@ const createCart = async (req, res) => {
         res.status(201).json({ status: "success", cart });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ status: "Erro", msg: "Error interno del servidor" });
+        res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
     }
 };
 
@@ -20,7 +20,7 @@ const getCartById = async (req = request, res = response) => {
         res.status(200).json({ status: "success", cart });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ status: "Erro", msg: "Error interno del servidor" });
+        res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
     }
 };
 
