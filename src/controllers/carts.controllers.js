@@ -33,7 +33,7 @@ const addProductToCart = async (req, res) => {
         res.status(200).json({ status: "success", payload: cartUpdate });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ status: "Erro", msg: "Error interno del servidor" });
+        res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
     }
 };
 
@@ -46,7 +46,7 @@ const deleteProductToCart = async (req, res) => {
         res.status(200).json({ status: "success", payload: cartUpdate });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ status: "Erro", msg: "Error interno del servidor" });
+        res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
     }
 };
 
@@ -60,7 +60,7 @@ const updateQuantityProductInCart = async (req, res) => {
         res.status(200).json({ status: "success", payload: cartUpdate });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ status: "Erro", msg: "Error interno del servidor" });
+        res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
     }
 };
 
@@ -73,7 +73,7 @@ const clearProductsToCart = async (req, res) => {
         res.status(200).json({ status: "success", cart });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ status: "Erro", msg: "Error interno del servidor" });
+        res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
     }
 };
 
@@ -89,7 +89,7 @@ const purchaseCart = async (req = request, res = response) => {
         res.status(200).json({ status: "success", ticket });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ status: "Erro", msg: "Error interno del servidor" });
+        res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
     }
 };
 
