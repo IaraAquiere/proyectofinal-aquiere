@@ -1,5 +1,6 @@
 let products = [];
 
+import { randomUUID } from 'crypto';
 import fs from "fs";
 
 const pathFile = "./src/data/products.json";
@@ -8,16 +9,16 @@ const addProduct = async (product) => {
   await getProducts();
   const { title, description, price, thumbnail, code, stock, category } = product;
   const newProduct = {
-    id: products.length + 1,
+    id: randomUUID(),
     title,
     description,
-    price,
-    thumbnail: thumbnail || [],
     code,
+    price,
+    status: true,
     stock,
     category,
-    status: true,
-  };
+    thumbnails: thumbnails || []
+};
 
   products.push(newProduct);
 
@@ -58,6 +59,7 @@ const updateProduct = async (id, productData) => {
 };
 
 const deleteProduct = async (id) => {
+  console.log(id)
   await getProducts();
   const product = await getProductById(id);
   if (!product) return false;

@@ -15,14 +15,14 @@ const GoogleStrategy = google.Strategy;
 const JWTStrategy = jwt.Strategy;
 const ExtractJWT = jwt.ExtractJwt;
 
-const CustomStrategy = passportCustom.Strategy; 
+const CustomStrategy = passportCustom.Strategy;
 
 export const initializePassport = () => {
   passport.use(
     "register", 
     new LocalStrategy({ passReqToCallback: true, usernameField: "email" }, async (req, username, password, done) => {
       try {
-        const { first_name, last_name, age } = req.body;
+        const { first_name, last_name, age, role } = req.body;
         const user = await userRepository.getByEmail(username);
         if (user) return done(null, false, { message: "User already exists" });
         const cart = await cartRepository.create();
@@ -32,25 +32,14 @@ export const initializePassport = () => {
           password: createHash(password),
           email: username,
           age,
+          role,
           cart: cart._id
         };
         const userCreate = await userRepository.create(newUser);
         return done(null, userCreate);
+
       } catch (error) {
         return done(error);
-      }
-    })
-  );
-
-  passport.use(
-    "login",
-    new LocalStrategy({ usernameField: "email" }, async (username, password, done) => {
-      try {
-        const user = await userRepository.getByEmail(username);
-        if (!user || !isValidPassword(user.password, password)) return done(null, false, {message: "User or email invalid"});
-        return done(null, user);
-      } catch (error) {
-        done(error);
       }
     })
   );
@@ -92,13 +81,28 @@ export const initializePassport = () => {
       {jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]), secretOrKey: envs.JWT_SECRET_CODE},
       async (jwt_payload, done) => {
           try {
+            console.log(jwt_payload)
             return done(null, jwt_payload); 
           } catch (error) {
             return done(error);
           }
       }
     )
-  )
+  );
+
+  passport.use(
+    "login",
+    new LocalStrategy({ usernameField: "email" }, async (username, password, done) => {
+      try {
+        const user = await userRepository.getByEmail(username);
+        if (!user || !isValidPassword(user.password, password)) return done(null, false, {message: "User or email not found"});
+        return done(null, user);
+      } catch (error) {
+        done(error);
+      }
+    })
+  );
+
 
   passport.use(
     "current",

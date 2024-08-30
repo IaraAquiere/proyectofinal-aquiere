@@ -1,17 +1,42 @@
 import { Router } from "express";
 import productsControllers from "../controllers/products.controllers.js";
-import { checkProductData } from "../middlewares/checkProductData.middleware.js";
 import { authorization } from "../middlewares/authorization.middleware.js";
-const router = Router();
+import { passportCall } from "../middlewares/passport.middleware.js";
+import {checkProductExist} from "../middlewares/checkProductExist.middleware.js"
+import { checkProductData } from "../middlewares/checkProductData.middleware.js";
 
+const router = Router();
 router.get("/", productsControllers.getAllProducts);
 
-router.get("/:pid", productsControllers.getProductById);
+router.post(
+  "/",
+  passportCall("jwt"),
+  authorization("admin"),
+  checkProductExist,
+  productsControllers.createProduct
+);
 
-router.delete("/:pid", authorization("admin"), productsControllers.deleteProduct);
 
-router.put("/:pid", authorization("admin"), productsControllers.updateProduct);
+router.delete(
+  "/:pid",
+  passportCall("jwt"),
+  checkProductExist,
+  authorization("admin"),
+  productsControllers.deleteProduct
+);
 
-router.post("/", authorization("admin"), checkProductData, productsControllers.createProduct);
+
+router.put(
+  "/:pid",
+  passportCall("jwt"),
+  checkProductExist,
+  authorization("admin"),
+  productsControllers.updateProduct
+);
+
+
+router.get("/:pid", checkProductExist, productsControllers.getProductById
+
+);
 
 export default router;

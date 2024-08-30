@@ -1,9 +1,9 @@
 import { cartModel } from "./models/cart.model.js";
-import { productModel } from "./models/product.model.js";
+
 
 const getAll = async () => {
-  const carts = await cartModel.find();
-  return carts;
+  const cart = await cartModel.find({ status: true });
+  return cart;
 };
 
 const getById = async (id) => {
@@ -13,7 +13,6 @@ const getById = async (id) => {
 
 const create = async () => {
   const cart = await cartModel.create({});
-
   return cart;
 };
 
@@ -27,23 +26,26 @@ const deleteOne = async (id) => {
   return cart;
 };
 
-const addProductToCart = async (cid, pid) => {
-  
-  const cart = await cartModel.findById(cid);
+const addProductToCart = async (id, pid) => {
 
-  const productInCart = cart.products.find((element) => element.product == pid);
-  if (productInCart) {
-    productInCart.quantity++;
-  } else {
-    cart.products.push({ product: pid, quantity: 1 });
+  const productInCart = await cartModel.findOneAndUpdate(
+    { _id: id, "products.product": pid },
+    { $inc: { "products.$.quantity": 1 } }
+  );
+
+  if (!productInCart) {
+    await cartModel.updateOne(
+      { _id: id },
+      { $push: { products: { product: pid, quantity: 1 } } }
+    );
   }
+  const cartUpdate = await cartModel.findById(id);
 
-  await cart.save(); 
-  return cart;
+  return cartUpdate;
 };
 
-const deleteProductToCart = async (cid, pid) => {
-  const cart = await cartModel.findById(cid);
+const deleteProductToCart = async (id, pid) => {
+  const cart = await cartModel.findById(id);
 
   cart.products = cart.products.filter((element) => element.product != pid);
 
@@ -52,8 +54,8 @@ const deleteProductToCart = async (cid, pid) => {
   return cart;
 };
 
-const updateQuantityProductInCart = async (cid, pid, quantity) => {
-  const cart = await cartModel.findById(cid);
+const updateQuantityProductInCart = async (id, pid, quantity) => {
+  const cart = await cartModel.findById(id);
   const product = cart.products.find((element) => element.product == pid);
   product.quantity = quantity;
 
@@ -61,8 +63,8 @@ const updateQuantityProductInCart = async (cid, pid, quantity) => {
   return cart;
 };
 
-const clearProductsToCart = async (cid) => {
-  const cart = await cartModel.findById(cid);
+const clearProductsToCart = async (id) => {
+  const cart = await cartModel.findById(id);
   cart.products = [];
 
   await cart.save();

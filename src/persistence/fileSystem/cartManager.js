@@ -1,5 +1,5 @@
 import fs from "fs";
-
+import { randomUUID } from "crypto";
 let carts = [];
 const pathFile = "./src/data/carts.json";
 
@@ -11,9 +11,9 @@ const getCarts = async () => {
 
 const createCart = async () => {
   await getCarts();
-  const newCart = {
-    id: carts.length + 1,
-    products: [],
+    const newCart = {
+        id: randomUUID(),
+        products: [],
   };
 
   carts.push(newCart);
@@ -25,24 +25,32 @@ const createCart = async () => {
 const getCartById = async (cid) => {
   
   await getCarts();
-  const cart = carts.find((c) => c.id === cid);
-  return cart;
+  const cartId = carts.find((c) => c.id === cid);
+  return cartId;
 };
 
 const addProductToCart = async (cid, pid) => {
   await getCarts();
-  const product = {
-    product: pid,
-    quantity: 1,satisfies
+
+    let quantity = 1;
+
+    const product = {
+        product: pId,
+        quantity: quantity,
   };
 
-  const index = carts.findIndex((cart) => cart.id === cid);
-  carts[index].products.push(product);
+  const index = carts.findIndex((cart) => cart.id === id);
 
+    const productOnCart = carts[index].products.find(p => p.product === pId);
+    
+    if(productOnCart){
+        productOnCart.quantity = productOnCart.quantity + 1;
+    }else{
+        carts[index].products.push(product);
+    }
 
-  await fs.promises.writeFile(pathFile, JSON.stringify(carts));
-  
-  return carts[index];
+    await fs.promises.writeFile(pathFile, JSON.stringify(carts));
+    return carts[index];
 };
 
 export default {

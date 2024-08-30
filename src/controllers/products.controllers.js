@@ -1,6 +1,18 @@
 import { request, response } from "express";
 import productServices from "../services/product.services.js";
 
+const createProduct = async (req = request, res = response) => {
+    try {
+        const newProduct = req.body;
+        const product = await productServices.createProduct(newProduct);
+
+        res.status(201).json({ status: "success", payload: product });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
+    }
+};
+
 const getAllProducts = async (req = request, res = response) => {
     try {
         const { limit, page, sort, category, status } = req.query;
@@ -32,50 +44,39 @@ const getAllProducts = async (req = request, res = response) => {
     }
 };
 
-const getProductById = async (req = request, res = response) => {
+const getProductById = async (req, res ) => {
     try {
         const { pid } = req.params;
         const product = await productServices.getProductById(pid);
         if (!product) return res.status(404).json({ status: "Error", msg: "Producto no encontrado" });
 
-        res.status(200).json({ status: "success", product });
+        res.status(200).json({ status: "success", payload: product });
     } catch (error) {
         console.log(error);
         res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
     }
 };
 
-const updateProduct = async (req = request, res = response) => {
+const updateProduct = async (req, res) => {
     try {
         const { pid } = req.params;
-        const productData = req.body;
-        const product = await productServices.updateProduct(pid, productData);
+        const data = req.body;
+        const product = await productServices.updateProduct(pid, data);
         if (!product) return res.status(404).json({ status: "Error", msg: "Producto no encontrado" });
 
-        res.status(200).json({ status: "success", product });
+        res.status(200).json({ status: "success", payload: product });
     } catch (error) {
         console.log(error);
         res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
     }
 };
 
-const createProduct = async (req = request, res = response) => {
-    try {
-        const productData = req.body;
-        const product = await productServices.createProduct(productData);
-
-        res.status(201).json({ status: "success", product });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
-    }
-};
 
 const deleteProduct = async (req, res) => {
     try {
         const { pid } = req.params;
-        const product = await productServices.deleteProduct(pid);
-        if (!product) return res.status(404).json({ status: "Error", msg: "Producto no encontrado" });
+        await productServices.deleteProduct(pid);
+       
 
         res.status(200).json({ status: "success", msg: `El producto con el id ${pid} fue eliminado` });
     } catch (error) {
@@ -85,8 +86,8 @@ const deleteProduct = async (req, res) => {
 };
 
 export default {
-    getAllProducts,
     createProduct,
+    getAllProducts,
     getProductById,
     updateProduct,
     deleteProduct,

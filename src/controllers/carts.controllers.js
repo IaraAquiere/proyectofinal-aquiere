@@ -4,8 +4,9 @@ import ticketServices from "../services/ticket.services.js";
 
 const createCart = async (req, res) => {
     try {
-        const cart = await cartServices.createCart();
-        res.status(201).json({ status: "success", cart });
+        const newCart = await cartServices.createCart();
+
+        res.status(201).json({ status: "success", newCartart });
     } catch (error) {
         console.log(error);
         res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
@@ -15,7 +16,7 @@ const createCart = async (req, res) => {
 const getCartById = async (req = request, res = response) => {
     try {
         const { cid } = req.params;
-        const cart = await cartDao.getById(cid);
+        const cart = await cartServices.getById(cid);
         if (!cart) return res.status(404).json({ status: "Error", msg: "Carrito no encontrado" });
         res.status(200).json({ status: "success", cart });
     } catch (error) {
@@ -30,7 +31,7 @@ const addProductToCart = async (req, res) => {
 
         const cartUpdate = await cartServices.addProductToCart(cid, pid);
 
-        res.status(200).json({ status: "success", payload: cartUpdate });
+        res.status(200).json({ status: "success", cart });
     } catch (error) {
         console.log(error);
         res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
@@ -41,9 +42,9 @@ const deleteProductToCart = async (req, res) => {
     try {
         const { cid, pid } = req.params;
 
-        const cartUpdate = await cartServices.deleteProductToCart(cid, pid);
+        const cart = await cartServices.deleteProductToCart(cid, pid);
 
-        res.status(200).json({ status: "success", payload: cartUpdate });
+        res.status(200).json({ status: "success", cart });
     } catch (error) {
         console.log(error);
         res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
@@ -55,9 +56,13 @@ const updateQuantityProductInCart = async (req, res) => {
         const { cid, pid } = req.params;
         const { quantity } = req.body;
 
-        const cartUpdate = await cartServices.updateQuantityProductInCart(cid, pid, Number(quantity));
+        const cartUpdate = await cartServices.updateQuantityProductInCart(
+            cid, 
+            pid, 
+            quantity
+        );
 
-        res.status(200).json({ status: "success", payload: cartUpdate });
+        res.status(200).json({ status: "success", cartUpdate });
     } catch (error) {
         console.log(error);
         res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
@@ -98,7 +103,7 @@ export default {
     getCartById,
     addProductToCart,
     deleteProductToCart,
-    updateQuantityProductInCart,
     clearProductsToCart,
+    updateQuantityProductInCart,
     purchaseCart,
 };

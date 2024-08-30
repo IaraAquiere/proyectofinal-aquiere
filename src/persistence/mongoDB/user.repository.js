@@ -26,7 +26,11 @@ const update = async (id, data) => {
 };
 
 const deleteOne = async (id) => {
-  const user = await userModel.findByIdAndUpdate(id, { status: false }, { new: true });
+  const user = await userModel.findByIdAndUpdate(
+    id, 
+    { status: false }, 
+    { new: true }
+  );
   return user;
 };
 

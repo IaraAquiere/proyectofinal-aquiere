@@ -1,36 +1,46 @@
 import { Router } from "express";
 import cartsControllers from "../controllers/carts.controllers.js";
-import { checkProductAndCart } from "../middlewares/checkProductAndCart.middleware.js";
+import { checkCartExist } from "../middlewares/checkCartExist.middleware.js";
 import { authorization } from "../middlewares/authorization.middleware.js";
 import { isUserCart } from "../middlewares/isUserCart.middleware.js";
 import { passportCall } from "../middlewares/passport.middleware.js";
 
 const router = Router();
 
-router.post("/", cartsControllers.createCart);
+const middlewares = [checkCartExist,passportCall("jwt"), authorization("user"), isUserCart];
 
-router.get("/:cid", cartsControllers.getCartById);
+router.post("/",middlewares, 
+    cartsControllers.createCart
+   );
+ 
 
-router.post(
-    "/:cid/product/:pid",
-    passportCall("jwt"),
-    authorization("user"),
-    isUserCart,
-    checkProductAndCart,
+ router.get("/:cId",
+   middlewares, 
+   cartsControllers.getCartById
+ );
+ 
+ router.post(
+    "/:cId/product/:pid",
+    middlewares, 
     cartsControllers.addProductToCart
-);
+  );
 
-router.delete("/:cid/product/:pid", passportCall("jwt"), authorization("user"), checkProductAndCart, cartsControllers.deleteProductToCart);
+  router.delete(
+    "/:cId/product/:pid",
+    middlewares,
+    cartsControllers.deleteProductToCart
+  );
 
 router.put(
-    "/:cid/product/:pid",
-    passportCall("jwt"),
-    authorization("user"),
-    checkProductAndCart,
-    cartsControllers.updateQuantityProductInCart
+  "/:cId/product/:pid",
+  middlewares,
+  cartsControllers.updateQuantityProductInCart
 );
 
-router.delete("/:cid", passportCall("jwt"), authorization("user"), cartsControllers.deleteProductToCart);
-router.get("/:cid/purchase", passportCall("jwt"), authorization("user"), cartsControllers.purchaseCart);
-
+router.delete("/:cId", 
+    middlewares, 
+    cartsControllers.deleteProductToCart);
+  
+  router.get("/:cId/purchase",passportCall("jwt"), authorization("user"), cartsControllers.purchaseCart);
+  
 export default router;
