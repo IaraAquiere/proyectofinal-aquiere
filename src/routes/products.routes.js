@@ -3,7 +3,7 @@ import productsControllers from "../controllers/products.controllers.js";
 import { authorization } from "../middlewares/authorization.middleware.js";
 import { passportCall } from "../middlewares/passport.middleware.js";
 import {checkProductExist} from "../middlewares/checkProductExist.middleware.js"
-import { checkProductData } from "../middlewares/checkProductData.middleware.js";
+
 
 const router = Router();
 router.get("/", productsControllers.getAllProducts);
