@@ -2,7 +2,8 @@ import { Router } from "express";
 import productsControllers from "../controllers/products.controllers.js";
 import { authorization } from "../middlewares/authorization.middleware.js";
 import { passportCall } from "../middlewares/passport.middleware.js";
-import {checkProductExist} from "../middlewares/checkProductExist.middleware.js"
+import { checkProductAndCart } from "../middlewares/checkProductAndCart.middleware.js";
+import { checkProductData } from "../middlewares/checkProductData.middleware.js";
 
 
 const router = Router();
@@ -12,7 +13,7 @@ router.post(
   "/",
   passportCall("jwt"),
   authorization("admin"),
-  checkProductExist,
+  checkProductData,
   productsControllers.createProduct
 );
 
@@ -20,7 +21,7 @@ router.post(
 router.delete(
   "/:pid",
   passportCall("jwt"),
-  checkProductExist,
+  checkProductAndCart,
   authorization("admin"),
   productsControllers.deleteProduct
 );
@@ -29,13 +30,13 @@ router.delete(
 router.put(
   "/:pid",
   passportCall("jwt"),
-  checkProductExist,
+  checkProductAndCart,
   authorization("admin"),
   productsControllers.updateProduct
 );
 
 
-router.get("/:pid", checkProductExist, productsControllers.getProductById
+router.get("/:pid", checkProductAndCart, productsControllers.getProductById
 
 );
 

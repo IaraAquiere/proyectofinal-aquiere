@@ -1,12 +1,12 @@
 import { request, response } from "express";
-import cartServices from "../services/cart.services.js";
+import cartServices from "../services/cart.services.js"
 import ticketServices from "../services/ticket.services.js";
 
 const createCart = async (req, res) => {
     try {
         const newCart = await cartServices.createCart();
 
-        res.status(201).json({ status: "success", newCartart });
+        res.status(201).json({ status: "success", newCart });
     } catch (error) {
         console.log(error);
         res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
@@ -16,7 +16,7 @@ const createCart = async (req, res) => {
 const getCartById = async (req = request, res = response) => {
     try {
         const { cid } = req.params;
-        const cart = await cartServices.getById(cid);
+        const cart = await cartServices.getCartById(cid);
         if (!cart) return res.status(404).json({ status: "Error", msg: "Carrito no encontrado" });
         res.status(200).json({ status: "success", cart });
     } catch (error) {
